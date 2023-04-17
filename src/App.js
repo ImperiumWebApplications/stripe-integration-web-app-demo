@@ -1,11 +1,11 @@
-import { Button } from "@mui/material";
+import { Button, Box } from "@mui/material";
 import { loadStripe } from "@stripe/stripe-js";
 import "./App.css";
 
 const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_PUBLISHABLE_KEY);
 
 function App() {
-  const handleCheckout = async () => {
+  const handleCheckout = async (priceOption) => {
     const stripe = await stripePromise;
 
     try {
@@ -14,6 +14,7 @@ function App() {
         headers: {
           "Content-Type": "application/json",
         },
+        body: JSON.stringify({ priceOption }),
       });
 
       const { sessionId } = await response.json();
@@ -27,9 +28,34 @@ function App() {
   return (
     <div className="App">
       <header className="App-header">
-        <Button variant="contained" color="primary" onClick={handleCheckout}>
-          Checkout
-        </Button>
+        <Box
+          display="flex"
+          justifyContent="space-between"
+          alignItems="center"
+          width="50%"
+        >
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={() => handleCheckout("basic")}
+          >
+            Basic
+          </Button>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={() => handleCheckout("silver")}
+          >
+            Silver
+          </Button>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={() => handleCheckout("gold")}
+          >
+            Gold
+          </Button>
+        </Box>
       </header>
     </div>
   );

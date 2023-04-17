@@ -5,11 +5,26 @@ const cors = require("cors");
 
 const corsHandler = cors({ origin: true });
 
+const getUnitAmount = (priceOption) => {
+  switch (priceOption) {
+    case "basic":
+      return 1000;
+    case "silver":
+      return 2000;
+    case "gold":
+      return 3000;
+    default:
+      throw new Error("Invalid price option");
+  }
+};
+
 const handleRequest = async (req, res) => {
   if (req.method !== "POST") {
     res.setHeader("Allow", "POST");
     return res.status(405).end("Method Not Allowed");
   }
+
+  const { priceOption } = req.body;
 
   try {
     const session = await stripe.checkout.sessions.create({
@@ -21,7 +36,7 @@ const handleRequest = async (req, res) => {
             product_data: {
               name: "Test Product",
             },
-            unit_amount: 1000,
+            unit_amount: getUnitAmount(priceOption),
           },
           quantity: 1,
         },
