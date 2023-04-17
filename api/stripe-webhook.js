@@ -4,6 +4,7 @@ const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 const cors = require("cors");
 const { ObjectId } = require("mongodb");
 const MongoClient = require("mongodb").MongoClient;
+const { buffer } = require("micro");
 
 const uri = `mongodb+srv://${process.env.MONGO_USER}:${process.env.MONGO_PASSWORD}@cluster0.yz6eyqz.mongodb.net/?retryWrites=true&w=majority`;
 const client = new MongoClient(uri, {
@@ -31,14 +32,14 @@ const handleRequest = async (req, res) => {
     res.setHeader("Allow", "POST");
     return res.status(405).end("Method Not Allowed");
   }
-
+  const rawBody = await buffer(req);
   const sig = req.headers["stripe-signature"];
 
   let event;
 
   try {
     event = stripe.webhooks.constructEvent(
-      req.body,
+      rawBody,
       sig,
       process.env.STRIPE_WEBHOOK_SECRET
     );
