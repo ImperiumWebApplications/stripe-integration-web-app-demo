@@ -52,7 +52,7 @@ const handleRequest = async (req, res) => {
     const userEmail = session.customer_details.email;
 
     const sessionToStore = {
-      _id: ObjectId(),
+      _id: new ObjectId(),
       sessionId: session.id,
       userEmail,
     };
