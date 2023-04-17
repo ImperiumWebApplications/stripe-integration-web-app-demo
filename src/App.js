@@ -23,7 +23,6 @@ function App() {
       console.error("Error:", error);
     }
   };
-
   return (
     <div className="App">
       <header className="App-header">
